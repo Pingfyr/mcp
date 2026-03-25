@@ -1,0 +1,43 @@
+{
+  "name": "@pingfyr/mcp",
+  "version": "0.2.0",
+  "description": "MCP server for Pingfyr — schedule reminders via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar.",
+  "author": "Pingfyr <support@pingfyr.com>",
+  "homepage": "https://pingfyr.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pingfyr/mcp.git"
+  },
+  "main": "dist/index.js",
+  "bin": {
+    "pingfyr-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "reminders",
+    "ai-agents",
+    "claude",
+    "pingfyr"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.18"
+  }
+}
