@@ -8,8 +8,13 @@ import { RemindUserClient } from "./client.js";
 const API_KEY = process.env.PINGFYR_API_KEY;
 const BASE_URL = process.env.PINGFYR_API_URL || "https://pingfyr.com";
 
-if (!API_KEY) {
-  console.error("Error: PINGFYR_API_KEY environment variable is required");
+if (!API_KEY || !API_KEY.startsWith("rm_")) {
+  console.error("Error: PINGFYR_API_KEY environment variable is required and must start with rm_");
+  process.exit(1);
+}
+
+if (!BASE_URL.startsWith("https://") && !process.env.PINGFYR_ALLOW_HTTP) {
+  console.error("Error: PINGFYR_API_URL must use HTTPS. Set PINGFYR_ALLOW_HTTP=1 for development.");
   process.exit(1);
 }
 
@@ -17,7 +22,7 @@ const client = new RemindUserClient(BASE_URL, API_KEY);
 
 const server = new McpServer({
   name: "pingfyr",
-  version: "0.2.0",
+  version: "0.2.1",
 });
 
 // Tool: Create a reminder
@@ -25,12 +30,13 @@ server.tool(
   "create_reminder",
   "Schedule a new reminder to be delivered via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar",
   {
-    title: z.string().describe("Title of the reminder (max 200 chars)"),
+    title: z.string().max(200).describe("Title of the reminder (max 200 chars)"),
     fire_at: z
       .string()
       .describe("When to fire the reminder (ISO 8601 datetime, must be in the future)"),
     body: z
       .string()
+      .max(2000)
       .optional()
       .describe("Optional body/description of the reminder (max 2000 chars)"),
     channel: z
@@ -58,7 +64,7 @@ server.tool(
       .optional()
       .describe("IANA timezone for recurring reminders (default: UTC)"),
     metadata: z
-      .record(z.string(), z.unknown())
+      .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
       .optional()
       .describe("Arbitrary metadata to attach to the reminder"),
   },
@@ -141,8 +147,8 @@ server.tool(
   "Update a pending reminder (title, fire time, etc.)",
   {
     id: z.string().uuid().describe("UUID of the reminder to update"),
-    title: z.string().optional().describe("New title"),
-    body: z.string().optional().describe("New body"),
+    title: z.string().max(200).optional().describe("New title"),
+    body: z.string().max(2000).optional().describe("New body"),
     fire_at: z.string().optional().describe("New fire time (ISO 8601)"),
     channel: z
       .enum(["email", "webhook", "slack", "discord", "telegram", "openclaw", "google_calendar"])
