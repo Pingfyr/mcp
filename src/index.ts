@@ -357,9 +357,15 @@ if (PORT !== null) {
     console.error("MCP HTTP server error:", err);
     process.exit(1);
   });
-} else {
+} else if (process.env.PINGFYR_API_KEY) {
   startStdio().catch((err) => {
     console.error("MCP server error:", err);
+    process.exit(1);
+  });
+} else {
+  // No PORT and no API key — default to HTTP on 3000 for server deployments
+  startHttp(3000).catch((err) => {
+    console.error("MCP HTTP server error:", err);
     process.exit(1);
   });
 }
