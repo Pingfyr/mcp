@@ -16,7 +16,7 @@ function createMcpServer(apiKey) {
     const client = new RemindUserClient(BASE_URL, apiKey);
     const server = new McpServer({
         name: "pingfyr",
-        version: "0.3.0",
+        version: "0.3.1",
     });
     // Tool: Create a reminder
     server.tool("create_reminder", "Schedule a new reminder to be delivered via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar", {
