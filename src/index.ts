@@ -21,7 +21,7 @@ function createMcpServer(apiKey: string): McpServer {
   const client = new RemindUserClient(BASE_URL, apiKey);
   const server = new McpServer({
     name: "pingfyr",
-    version: "0.2.1",
+    version: "0.3.0",
   });
 
   // Tool: Create a reminder
