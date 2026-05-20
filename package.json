@@ -1,6 +1,6 @@
 {
   "name": "@pingfyr/mcp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "MCP server for Pingfyr — schedule reminders via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar.",
   "author": "Pingfyr <support@pingfyr.com>",
   "homepage": "https://pingfyr.com",
@@ -21,6 +21,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "prepublishOnly": "npm run build"
@@ -39,6 +40,7 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@types/node": "^25.9.1",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vitest": "^4.0.18"

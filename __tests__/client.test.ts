@@ -93,6 +93,17 @@ describe("RemindUserClient", () => {
       const result = await client.updateReminder("abc", { title: "X" });
       expect(result.error).toBe("Reminder is not pending");
     });
+
+    it("sends cron_expression in PATCH body when provided", async () => {
+      mockFetch.mockResolvedValueOnce(jsonResponse({ id: "abc" }));
+
+      await client.updateReminder("abc", { repeat: "custom", cron_expression: "0 9 * * 1" });
+
+      const [, options] = mockFetch.mock.calls[0];
+      const body = JSON.parse(options.body as string);
+      expect(body.repeat).toBe("custom");
+      expect(body.cron_expression).toBe("0 9 * * 1");
+    });
   });
 
   describe("cancelReminder", () => {
