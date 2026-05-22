@@ -16,7 +16,7 @@ function createMcpServer(apiKey) {
     const client = new RemindUserClient(BASE_URL, apiKey);
     const server = new McpServer({
         name: "pingfyr",
-        version: "0.3.2",
+        version: "0.3.3",
     });
     // Tool: Create a reminder
     server.tool("create_reminder", "Schedule a new reminder to be delivered via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar", {
@@ -202,6 +202,110 @@ async function startHttp(port) {
         if (req.method === "GET" && parsedUrl.pathname === "/health") {
             res.writeHead(200, { ...CORS_HEADERS, "Content-Type": "application/json" });
             res.end(JSON.stringify({ status: "ok" }));
+            return;
+        }
+        // Server card — lets Smithery and other gateways discover capabilities without auth
+        if (req.method === "GET" && parsedUrl.pathname === "/.well-known/mcp/server-card.json") {
+            const serverCard = {
+                serverInfo: { name: "pingfyr", version: "0.3.3" },
+                authentication: { required: true, schemes: ["bearer"] },
+                tools: [
+                    {
+                        name: "create_reminder",
+                        description: "Schedule a new reminder to be delivered via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                title: { type: "string", maxLength: 200 },
+                                fire_at: { type: "string", description: "ISO 8601 datetime" },
+                                body: { type: "string", maxLength: 2000 },
+                                channel: {
+                                    type: "string",
+                                    enum: [
+                                        "email",
+                                        "webhook",
+                                        "slack",
+                                        "discord",
+                                        "telegram",
+                                        "openclaw",
+                                        "google_calendar",
+                                    ],
+                                },
+                                recipients: { type: "array", items: { type: "string" }, minItems: 1 },
+                                repeat: { type: "string", enum: ["daily", "weekly", "monthly", "custom"] },
+                                cron_expression: { type: "string" },
+                                timezone: { type: "string" },
+                                metadata: { type: "object" },
+                            },
+                            required: ["title", "fire_at", "channel", "recipients"],
+                        },
+                    },
+                    {
+                        name: "list_reminders",
+                        description: "List all reminders for the authenticated user with optional filtering",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                status: {
+                                    type: "string",
+                                    enum: ["pending", "processing", "delivered", "failed", "cancelled"],
+                                },
+                                limit: { type: "number" },
+                                offset: { type: "number" },
+                            },
+                        },
+                    },
+                    {
+                        name: "update_reminder",
+                        description: "Update a pending reminder (title, fire time, etc.)",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                id: { type: "string", format: "uuid" },
+                                title: { type: "string", maxLength: 200 },
+                                body: { type: "string", maxLength: 2000 },
+                                fire_at: { type: "string" },
+                                channel: {
+                                    type: "string",
+                                    enum: [
+                                        "email",
+                                        "webhook",
+                                        "slack",
+                                        "discord",
+                                        "telegram",
+                                        "openclaw",
+                                        "google_calendar",
+                                    ],
+                                },
+                                recipients: { type: "array", items: { type: "string" } },
+                                repeat: {
+                                    type: "string",
+                                    enum: ["daily", "weekly", "monthly", "custom"],
+                                    nullable: true,
+                                },
+                                cron_expression: { type: "string", nullable: true },
+                                timezone: { type: "string" },
+                            },
+                            required: ["id"],
+                        },
+                    },
+                    {
+                        name: "cancel_reminder",
+                        description: "Cancel a pending reminder so it will not be delivered",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                id: { type: "string", format: "uuid" },
+                            },
+                            required: ["id"],
+                        },
+                    },
+                ],
+                resources: [],
+                prompts: [],
+            };
+            res.writeHead(200, { ...CORS_HEADERS, "Content-Type": "application/json" });
+            res.end(JSON.stringify(serverCard));
             return;
         }
         // MCP endpoint — POST, GET (SSE), DELETE (session close)
