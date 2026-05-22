@@ -16,7 +16,7 @@ function createMcpServer(apiKey) {
     const client = new RemindUserClient(BASE_URL, apiKey);
     const server = new McpServer({
         name: "pingfyr",
-        version: "0.3.1",
+        version: "0.3.2",
     });
     // Tool: Create a reminder
     server.tool("create_reminder", "Schedule a new reminder to be delivered via email, webhook, Slack, Discord, Telegram, OpenClaw, or Google Calendar", {
@@ -197,18 +197,19 @@ async function startHttp(port) {
             res.end();
             return;
         }
+        const parsedUrl = new URL(req.url ?? "/", `http://localhost`);
         // Health check
-        if (req.method === "GET" && req.url === "/health") {
+        if (req.method === "GET" && parsedUrl.pathname === "/health") {
             res.writeHead(200, { ...CORS_HEADERS, "Content-Type": "application/json" });
             res.end(JSON.stringify({ status: "ok" }));
             return;
         }
         // MCP endpoint — POST, GET (SSE), DELETE (session close)
-        if (req.url === "/mcp" &&
+        if (parsedUrl.pathname === "/mcp" &&
             (req.method === "POST" || req.method === "GET" || req.method === "DELETE")) {
             const authHeader = req.headers["authorization"] ?? "";
-            const match = authHeader.match(/^Bearer (.+)$/);
-            const apiKey = match ? match[1] : null;
+            const bearerMatch = authHeader.match(/^Bearer (.+)$/);
+            const apiKey = bearerMatch ? bearerMatch[1] : (parsedUrl.searchParams.get("apiKey") ?? null);
             if (!apiKey || !apiKey.startsWith("rm_")) {
                 res.writeHead(401, { ...CORS_HEADERS, "Content-Type": "application/json" });
                 res.end(JSON.stringify({
