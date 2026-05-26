@@ -1,5 +1,7 @@
 # @pingfyr/mcp — MCP Server for Pingfyr Reminder API
 
+[![MCP Server](https://glama.ai/mcp/servers/Pingfyr/mcp/badges/card.svg)](https://glama.ai/mcp/servers/Pingfyr/mcp)
+
 Schedule reminders via API. Wake your agents via webhook. Deliver notifications via email, Slack, Discord, Telegram, OpenClaw, or Google Calendar.
 
 ## What is Pingfyr?
