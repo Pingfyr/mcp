@@ -16,29 +16,15 @@ No cron jobs. No infrastructure. Just tell your agent when to remind, and Pingfy
 npm install -g @pingfyr/mcp
 ```
 
-Or run directly with npx:
+Or run directly with npx (recommended):
 
 ```bash
-npx @pingfyr/mcp
+npx @pingfyr/mcp --token <your-api-token>
 ```
+
+Get your API token from the [Pingfyr dashboard](https://pingfyr.com/dashboard/api-keys).
 
 ## Configuration
-
-### Claude Code (`~/.claude/mcp.json`)
-
-```json
-{
-  "mcpServers": {
-    "pingfyr": {
-      "command": "pingfyr-mcp",
-      "env": {
-        "PINGFYR_API_KEY": "rm_your_api_key",
-        "PINGFYR_API_URL": "https://pingfyr.com"
-      }
-    }
-  }
-}
-```
 
 ### Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS)
 
@@ -47,11 +33,20 @@ npx @pingfyr/mcp
   "mcpServers": {
     "pingfyr": {
       "command": "npx",
-      "args": ["-y", "@pingfyr/mcp"],
-      "env": {
-        "PINGFYR_API_KEY": "rm_your_api_key",
-        "PINGFYR_API_URL": "https://pingfyr.com"
-      }
+      "args": ["-y", "@pingfyr/mcp", "--token", "rm_your_api_token"]
+    }
+  }
+}
+```
+
+### Claude Code (`~/.claude/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "pingfyr": {
+      "command": "npx",
+      "args": ["-y", "@pingfyr/mcp", "--token", "rm_your_api_token"]
     }
   }
 }
@@ -60,8 +55,6 @@ npx @pingfyr/mcp
 ### Other MCP Clients
 
 Any MCP-compatible client (Cursor, Windsurf, etc.) can use the same configuration pattern above.
-
-Sign up at [pingfyr.com](https://pingfyr.com) to get your API key.
 
 ## Available Tools
 
@@ -232,13 +225,6 @@ Connect your account at Settings → Google Calendar in the Pingfyr dashboard.
 | Enterprise | Contact | Unlimited       | Unlimited        |
 
 Free plan includes Webhook, Slack, Discord, Telegram, and OpenClaw channels. Email and Google Calendar require a paid plan (Starter+).
-
-## Environment Variables
-
-| Variable          | Required | Description                                   |
-| ----------------- | -------- | --------------------------------------------- |
-| `PINGFYR_API_KEY` | Yes      | Your Pingfyr API key                          |
-| `PINGFYR_API_URL` | No       | API base URL (default: `https://pingfyr.com`) |
 
 ## License
 
