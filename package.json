@@ -9,23 +9,12 @@
     "url": "git+https://github.com/Pingfyr/mcp.git"
   },
   "main": "dist/index.js",
-  "bin": {
-    "pingfyr-mcp": "bin/pingfyr-mcp.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "bin",
-    "dist"
-  ],
   "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "vitest run",
-    "prepublishOnly": "echo 'Publish only bin/ — no build needed'"
+    "test": "vitest run"
   },
   "keywords": [
     "mcp",
@@ -38,12 +27,8 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "mcp-remote": "0.1.38",
     "zod": "^3.25.0"
   },
-  "bundledDependencies": [
-    "mcp-remote"
-  ],
   "devDependencies": {
     "@types/node": "^25.9.1",
     "tsx": "^4.19.4",
