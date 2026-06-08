@@ -1,10 +1,8 @@
-# @pingfyr/mcp — MCP Server for Pingfyr
+# @pingfyr/mcp
 
-[![MCP Server](https://glama.ai/mcp/servers/Pingfyr/mcp/badges/card.svg)](https://glama.ai/mcp/servers/Pingfyr/mcp)
+Connect your AI assistant to Pingfyr via MCP. Manage reminders through natural conversation.
 
-The Pingfyr MCP server connects AI assistants to the Pingfyr reminder API using the [Model Context Protocol](https://modelcontextprotocol.io). It lets Claude Desktop, Claude Code, Cursor, and other MCP-compatible clients schedule, list, update, and cancel reminders on your behalf — across all 7 channels.
-
-No cron jobs. No infrastructure. Your AI agent calls a tool and Pingfyr handles the delivery.
+One API call. Seven channels. Your reminders fire automatically — no external cron, no polling, no babysitting.
 
 Available as a local npm package or as a hosted server at `mcp.pingfyr.com` — no local install required.
 
@@ -157,7 +155,7 @@ HTTP transport is supported by Claude Code and Cursor. Claude Desktop requires t
 }
 ```
 
-Find your bot UUID in Settings → Telegram Bots on the Pingfyr dashboard.
+Find your `bot_id` in Settings → Telegram Bots on the Pingfyr dashboard.
 
 ### OpenClaw notification
 
