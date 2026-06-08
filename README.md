@@ -1,14 +1,12 @@
-# @pingfyr/mcp — MCP Server for Pingfyr Reminder API
+# @pingfyr/mcp — MCP Server for Pingfyr
 
 [![MCP Server](https://glama.ai/mcp/servers/Pingfyr/mcp/badges/card.svg)](https://glama.ai/mcp/servers/Pingfyr/mcp)
 
-Schedule reminders via API. Wake your agents via webhook. Deliver notifications via email, Slack, Discord, Telegram, OpenClaw, or Google Calendar.
+The Pingfyr MCP server connects AI assistants to the Pingfyr reminder API using the [Model Context Protocol](https://modelcontextprotocol.io). It lets Claude Desktop, Claude Code, Cursor, and other MCP-compatible clients schedule, list, update, and cancel reminders on your behalf — across all 7 channels.
 
-## What is Pingfyr?
+No cron jobs. No infrastructure. Your AI agent calls a tool and Pingfyr handles the delivery.
 
-Pingfyr is a reminder service built for AI agents. It lets your agent schedule reminders that get delivered at the right time — via email to humans, via webhook to wake up other agents, or via Slack, Discord, Telegram, OpenClaw, and Google Calendar for team notifications.
-
-No cron jobs. No infrastructure. Just tell your agent when to remind, and Pingfyr handles the rest.
+Available as a local npm package or as a hosted server at `mcp.pingfyr.com` — no local install required.
 
 ## Installation
 
@@ -24,7 +22,11 @@ npx @pingfyr/mcp
 
 ## Configuration
 
-### Claude Code (`~/.claude/mcp.json`)
+### Local Setup (stdio)
+
+Run the MCP server as a local process. Requires Node.js 18+.
+
+Add to your MCP client config (Claude Code, Cursor, Windsurf, etc.):
 
 ```json
 {
@@ -32,36 +34,34 @@ npx @pingfyr/mcp
     "pingfyr": {
       "command": "pingfyr-mcp",
       "env": {
-        "PINGFYR_API_KEY": "rm_your_api_key",
-        "PINGFYR_API_URL": "https://pingfyr.com"
+        "PINGFYR_API_KEY": "rm_your_api_key"
       }
     }
   }
 }
 ```
 
-### Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS)
+Sign up at [pingfyr.com](https://pingfyr.com) to get your API key.
+
+### Hosted Setup
+
+No install required. Connect directly to `mcp.pingfyr.com` using HTTP transport. Your API key is sent as a Bearer token per request.
 
 ```json
 {
   "mcpServers": {
     "pingfyr": {
-      "command": "npx",
-      "args": ["-y", "@pingfyr/mcp"],
-      "env": {
-        "PINGFYR_API_KEY": "rm_your_api_key",
-        "PINGFYR_API_URL": "https://pingfyr.com"
+      "type": "http",
+      "url": "https://mcp.pingfyr.com",
+      "headers": {
+        "Authorization": "Bearer rm_your_api_key"
       }
     }
   }
 }
 ```
 
-### Other MCP Clients
-
-Any MCP-compatible client (Cursor, Windsurf, etc.) can use the same configuration pattern above.
-
-Sign up at [pingfyr.com](https://pingfyr.com) to get your API key.
+HTTP transport is supported by Claude Code and Cursor. Claude Desktop requires the local (stdio) option above.
 
 ## Available Tools
 
@@ -151,13 +151,13 @@ Sign up at [pingfyr.com](https://pingfyr.com) to get your API key.
   "title": "Daily standup",
   "fire_at": "2026-12-01T09:00:00Z",
   "channel": "telegram",
-  "recipients": ["bot:123456:789012"],
+  "recipients": ["bot:your-bot-uuid:your-chat-id"],
   "repeat": "daily",
   "timezone": "Europe/Berlin"
 }
 ```
 
-Find your `bot_id` in Settings → Telegram Bots on the Pingfyr dashboard.
+Find your bot UUID in Settings → Telegram Bots on the Pingfyr dashboard.
 
 ### OpenClaw notification
 
